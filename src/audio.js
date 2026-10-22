@@ -15,7 +15,7 @@ export class TypewriterAudio {
 
   init() {
     if (this.ctx) {
-      if (this.ctx.state === 'suspended') this.ctx.resume();
+      if (this.ctx.state !== 'running') { try { this.ctx.resume(); } catch (e) { /* ignore */ } }
       return;
     }
     const AudioCtx = window.AudioContext || window.webkitAudioContext;
@@ -28,6 +28,15 @@ export class TypewriterAudio {
     for (let i = 0; i < sr; i++) {
       data[i] = Math.random() * 2 - 1;
     }
+    // iOS/Android unlock: start a silent buffer inside the user gesture.
+    try {
+      const silent = this.ctx.createBuffer(1, 1, 22050);
+      const src = this.ctx.createBufferSource();
+      src.buffer = silent;
+      src.connect(this.ctx.destination);
+      src.start(0);
+      if (this.ctx.state !== 'running') this.ctx.resume();
+    } catch (e) { /* ignore */ }
   }
 
   toggleMute() {
