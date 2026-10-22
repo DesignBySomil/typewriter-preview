@@ -382,6 +382,7 @@ export function createPaperSystem(carriageGroup) {
     triggerNewSheetInsert,
     triggerPaperEject,
     getExportSourceCanvas,
+    isExportingArchived: () => !currentSheetHasInk && hasArchivedSheet,
     isSheetPresent: () => sheetStatus === 'seated' || sheetStatus === 'inserting' || sheetStatus === 'pulling' || sheetStatus === 'settling',
     getSheetStatus: () => sheetStatus,
     getCurrentLine: () => Math.round(currentCanvasLine),
