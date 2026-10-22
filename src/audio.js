@@ -14,6 +14,14 @@ export class TypewriterAudio {
   }
 
   init() {
+    // iOS fix: Safari/WebKit maps WebAudio to the "ambient" audio session,
+    // which is silenced by the hardware mute switch and ringer volume.
+    // Opt into the playback session (iOS 17+) so typing is audible like media.
+    try {
+      if (navigator.audioSession && navigator.audioSession.type !== 'playback') {
+        navigator.audioSession.type = 'playback';
+      }
+    } catch (e) { /* older browsers without the Audio Session API */ }
     if (this.ctx) {
       if (this.ctx.state !== 'running') { try { this.ctx.resume(); } catch (e) { /* ignore */ } }
       return;
