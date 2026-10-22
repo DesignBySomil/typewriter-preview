@@ -662,14 +662,16 @@ function syncMuteUi(isMuted) {
 }
 function onMuteClick() {
   sound.init();
-  syncMuteUi(sound.toggleMute());
+  const isMuted = sound.toggleMute();
+  syncMuteUi(isMuted);
+  if (!isMuted) sound.playKeyClack(1.0); // audible confirmation that sound is on
 }
 btnMute?.addEventListener('click', onMuteClick);
 btnMuteM?.addEventListener('click', onMuteClick);
 
 // Unlock audio on the first real gesture (phones block audio until then).
 const unlockAudio = () => sound.init();
-['pointerdown', 'touchend', 'click', 'keydown'].forEach((ev) => {
+['pointerdown', 'touchstart', 'touchend', 'click', 'keydown'].forEach((ev) => {
   window.addEventListener(ev, unlockAudio, { passive: true });
 });
 
