@@ -648,12 +648,29 @@ document.getElementById('btn-sheet')?.addEventListener('click', handleNewSheetBu
 document.getElementById('btn-sheet-m')?.addEventListener('click', handleNewSheetButton);
 
 const btnMute = document.getElementById('btn-mute');
-btnMute?.addEventListener('click', () => {
+const btnMuteM = document.getElementById('btn-mute-m');
+function syncMuteUi(isMuted) {
+  if (btnMute) {
+    btnMute.textContent = isMuted ? 'AUDIO: MUTED' : 'AUDIO: ON';
+    btnMute.classList.toggle('active', !isMuted);
+    btnMute.classList.toggle('warn', isMuted);
+  }
+  if (btnMuteM) {
+    btnMuteM.classList.toggle('muted', isMuted);
+    btnMuteM.setAttribute('aria-label', isMuted ? 'Sound off' : 'Sound on');
+  }
+}
+function onMuteClick() {
   sound.init();
-  const isMuted = sound.toggleMute();
-  btnMute.textContent = isMuted ? 'AUDIO: MUTED' : 'AUDIO: ON';
-  btnMute.classList.toggle('active', !isMuted);
-  btnMute.classList.toggle('warn', isMuted);
+  syncMuteUi(sound.toggleMute());
+}
+btnMute?.addEventListener('click', onMuteClick);
+btnMuteM?.addEventListener('click', onMuteClick);
+
+// Unlock audio on the first real gesture (phones block audio until then).
+const unlockAudio = () => sound.init();
+['pointerdown', 'touchend', 'click', 'keydown'].forEach((ev) => {
+  window.addEventListener(ev, unlockAudio, { passive: true });
 });
 
 window.addEventListener('resize', () => {
