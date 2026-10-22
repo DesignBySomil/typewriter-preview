@@ -474,6 +474,8 @@ function toggleExportPanel() {
   if (!printSavePanel) return;
   if (printSavePanel.classList.contains('hidden')) {
     exportSys.renderPreview(document.getElementById('export-preview'));
+    const t = document.getElementById('export-title');
+    if (t) t.textContent = paperSys.isExportingArchived() ? 'THE CURRENT SHEET IS BLANK. SHOWING YOUR LAST REMOVED SHEET.' : 'EXPORT TYPED SHEET';
   }
   printSavePanel.classList.toggle('hidden');
 }
